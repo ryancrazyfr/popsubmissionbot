@@ -4,6 +4,9 @@ from datetime import datetime
 import os
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import json
+import os
+from io import StringIO
 
 # === CONFIGURATION ===
 BOT_TOKEN = '7854611527:AAHEP_ZsZ0cj3hOaPTiSz18hi9kYOotftDs'
@@ -13,7 +16,9 @@ POP_DIR = 'pop_submissions'
 
 # === SETUP GOOGLE SHEETS ===
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
+google_json = os.environ['GOOGLE_JSON']
+creds_dict = json.load(StringIO(google_json))
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 sheet = client.open(SHEET_NAME).sheet1  # Use first worksheet
 
